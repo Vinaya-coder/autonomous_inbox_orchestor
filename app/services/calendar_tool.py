@@ -42,7 +42,6 @@ def is_slot_busy(service, start_time_iso):
             "items": [{"id": "primary"}]
         }
 
-        # This query will now WORK because it has 'service' (the identity)
         query = service.freebusy().query(body=body).execute()
         busy_slots = query.get("calendars", {}).get("primary", {}).get("busy", [])
 

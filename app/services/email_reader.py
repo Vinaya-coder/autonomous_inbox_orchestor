@@ -22,7 +22,6 @@ class EmailReader:
         mail.login(settings.EMAIL_ADDRESS, settings.EMAIL_PASSWORD)
         mail.select("inbox")
 
-        # 🔹 Search for UNSEEN emails (better for production than "ALL")
         status, data = mail.search(None, "UNSEEN")
 
         emails = []
@@ -50,7 +49,6 @@ class EmailReader:
             subject = msg.get("Subject", "No Subject")
             body = ""
 
-            # ... (Your existing multipart logic here) ...
             if msg.is_multipart():
                 for part in msg.walk():
                     if part.get_content_type() == "text/plain" and "attachment" not in str(
