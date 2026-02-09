@@ -1,0 +1,9 @@
+.env
+token.json
+credentials.json
+__pycache__/
+*.db
+venv/
+/.env.dev
+/token_calendar.json
+/vinaya_info.txt

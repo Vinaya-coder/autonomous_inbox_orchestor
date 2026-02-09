@@ -29,7 +29,6 @@ class ReplyContext(Base):
     content = Column(Text)
     sender_email = Column(String, nullable=True)
 
-# 🏆 FIXED CHATHISTORY:
 class ChatHistory(Base):
     __tablename__ = "chat_history"
     id = Column(Integer, primary_key=True, index=True)

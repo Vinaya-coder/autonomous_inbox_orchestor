@@ -10,8 +10,8 @@ from alembic import context
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # email_agent/
 
 # 2️⃣ Import your Base from email_models
-from app.database import Base
-from app.models.email_models import ChatHistory, Email, EmailLog, ReplyContext # <--- IMPORTANT
+from app import Base
+from app import ChatHistory, Email, EmailLog, ReplyContext # <--- IMPORTANT
 # 3️⃣ Load .env.dev for DATABASE_URL
 from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.dev"))
