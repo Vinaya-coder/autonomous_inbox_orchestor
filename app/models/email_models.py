@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime,ForeignKey
 from app.database import Base
-import datetime
-
+from datetime import datetime, timezone
 class Email(Base):
     __tablename__ = "emails"
     id = Column(Integer, primary_key=True, index=True)
@@ -37,5 +36,16 @@ class ChatHistory(Base):
     content = Column(Text)
     created_at = Column(
         DateTime,
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+        default=lambda: datetime.now(timezone.utc)
     )
+class AttachmentRecord(Base):
+    __tablename__ = "email_attachments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    thread_id = Column(String, index=True)
+    sender_email=Column(String)
+    file_name = Column(String)
+    url = Column(String)
+    created_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc))

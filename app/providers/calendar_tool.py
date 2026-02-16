@@ -19,14 +19,18 @@ def get_calendar_service():
         creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
+            print("Token expired! Refreshing in background...")
             creds.refresh(Request())
+            with open(TOKEN_FILE, 'w') as token:
+                token.write(creds.to_json())
+                print("Refreshed token saved to disk.")
         else:
+            print("Manual login required...")
             flow = InstalledAppFlow.from_client_secrets_file(CRED_FILE, SCOPES)
             creds = flow.run_local_server(port=0)
-        with open(TOKEN_FILE, 'w') as token:
-            token.write(creds.to_json())
+            with open(TOKEN_FILE, 'w') as token:
+                token.write(creds.to_json())
     return build('calendar', 'v3', credentials=creds)
-
 
 def create_meeting(summary, attendee_emails, start_time_iso):
     """Clean emails, check for conflicts, and create a Google Meet session."""
@@ -35,21 +39,16 @@ def create_meeting(summary, attendee_emails, start_time_iso):
         if isinstance(attendee_emails, str):
             attendee_emails = [attendee_emails]
 
-        # 1. Clean Emails
         clean_list = []
         for raw in attendee_emails:
             found = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', str(raw))
             if found:
                 clean_list.append({'email': found.group(0).lower()})
 
-        # 2. Setup Times
-        # We handle the 'Z' and ensure start_dt is defined first
         clean_start_time = start_time_iso.replace('Z', '')
         start_dt = datetime.datetime.fromisoformat(clean_start_time)
         end_dt = start_dt + datetime.timedelta(minutes=30)
 
-        # 3. Create 'check' (Fixes Unresolved Reference)
-        # We query the calendar to see if anything exists in this time slot
         check = service.events().list(
             calendarId='primary',
             timeMin=start_dt.isoformat() + 'Z',
@@ -57,11 +56,9 @@ def create_meeting(summary, attendee_emails, start_time_iso):
             singleEvents=True
         ).execute()
 
-        # 4. Conflict Logic
         if check.get('items'):
             return "ALREADY_BOOKED: This slot is already taken. Suggest a different time to the user."
 
-        # 5. Create Event with Unique ID (Prevents 409 errors)
         unique_id = f"req_{int(time.time() * 1000)}"
         event = {
             'summary': summary,

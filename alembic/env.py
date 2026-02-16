@@ -6,12 +6,13 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# 1️⃣ Add project root to Python path
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # email_agent/
+from app.database import Base
 
+# 1️⃣ Add project root to Python path
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 # 2️⃣ Import your Base from email_models
-from app import Base
-from app import ChatHistory, Email, EmailLog, ReplyContext # <--- IMPORTANT
+
+from app.models.email_models import ChatHistory, Email, EmailLog, ReplyContext
 # 3️⃣ Load .env.dev for DATABASE_URL
 from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.dev"))
