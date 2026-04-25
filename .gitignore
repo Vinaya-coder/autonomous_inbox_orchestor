@@ -7,3 +7,15 @@ venv/
 /.env.dev
 /token_calendar.json
 /vinaya_info.txt
+/temp_attachments/
+static/attachments/
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+__pyache__/
+*.pyc
+
+.idea/
+.vscode
